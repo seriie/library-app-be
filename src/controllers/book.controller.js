@@ -105,9 +105,9 @@ export const deleteBook = async (req, res) => {
 
     await book.destroy();
 
-    res.status(200).json({
+    res.status(204).json({
       message: "Book deleted successfully",
-      code: 200,
+      code: 204,
     });
   } catch (err) {
     res.status(500).json({ message: err.message, code: 500 });
