@@ -15,7 +15,7 @@ generator client {
 
 model Session {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String @unique
   user      User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())

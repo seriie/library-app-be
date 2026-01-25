@@ -27,6 +27,8 @@ export const createUser = async (req, res) => {
   }
 };
 
+// Add session after logged in and expired after 1 hour
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -45,6 +47,8 @@ export const loginUser = async (req, res) => {
       { expiresIn: "1h" },
     );
 
+    const session = await prisma.session.create({ data: { id: nanoIdFormat("suid-"), userId: user.id, token } });
+    console.log(session);
     res
       .status(200)
       .json({ message: "Login successful", code: 200, data: { id: user.id, name: user.name, email: user.email, token } });
