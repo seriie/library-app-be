@@ -1,10 +1,11 @@
-import User from "../models/user.model.js";
+import prisma from "../config/prisma.js";
+
 
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findOne({
+    const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      attributes: ["id", "name", "email", "role", "createdAt"],
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
 
     if (!user) {

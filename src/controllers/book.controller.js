@@ -1,10 +1,10 @@
-import Book from "../models/book.model.js";
+import prisma from "../config/prisma.js";
 import { nanoIdFormat } from "../utils/nanoIdFormat.js";
 import { isbnFormat } from "../utils/isbnFormat.js";
 
 export const getBooks = async (req, res) => {
   try {
-    const books = await Book.findAll();
+    const books = await prisma.book.findMany();
     res.status(200).json({
       message: "Successfully retrieving book data",
       code: 200,
@@ -18,7 +18,7 @@ export const getBooks = async (req, res) => {
 export const getBookById = async (req, res) => {
   try {
     const { id } = req.params;
-    const book = await Book.findByPk(id);
+    const book = await prisma.book.findUnique({ where: { id } });
 
     if (!book) {
       return res.status(404).json({ message: "Book not found", code: 404 });
@@ -45,16 +45,18 @@ export const createBook = async (req, res) => {
 
     do {
       isbn = isbnFormat();
-      existingBook = await Book.findOne({ where: { isbn } });
+      existingBook = await prisma.book.findUnique({ where: { isbn } });
     } while (existingBook);
 
-    const book = await Book.create({
-      id,
-      isbn,
-      title,
-      author,
-      description,
-      stock,
+    const book = await prisma.book.create({
+      data: {
+        id,
+        isbn,
+        title,
+        author,
+        description,
+        stock,
+      }
     });
 
     res.status(201).json({
@@ -72,22 +74,25 @@ export const patchBook = async (req, res) => {
     const { id } = req.params;
     const { title, author, description, stock } = req.body;
 
-    const book = await Book.findByPk(id);
+    const book = await prisma.book.findUnique({ where: { id } });
     if (!book) {
       return res.status(404).json({ message: "Book not found", code: 404 });
     }
 
-    if (title) book.title = title;
-    if (author) book.author = author;
-    if (description) book.description = description;
-    if (stock !== undefined) book.stock = stock;
-
-    await book.save();
+    const updatedBook = await prisma.book.update({
+      where: { id },
+      data: {
+        title: title || undefined,
+        author: author || undefined,
+        description: description || undefined,
+        stock: stock !== undefined ? stock : undefined,
+      },
+    });
 
     res.status(200).json({
       message: "Book updated successfully",
       code: 200,
-      data: book,
+      data: updatedBook,
     });
   } catch (err) {
     res.status(500).json({ message: err.message, code: 500 });
@@ -98,12 +103,12 @@ export const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const book = await Book.findByPk(id);
+    const book = await prisma.book.findUnique({ where: { id } });
     if (!book) {
       return res.status(404).json({ message: "Book not found", code: 404 });
     }
 
-    await book.destroy();
+    await prisma.book.delete({ where: { id } });
 
     res.status(204).json({
       message: "Book deleted successfully",

@@ -16,11 +16,17 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.16.1",
     "nanoid": "^5.1.6",
     "nodemon": "^3.1.11",
     "sequelize": "^6.37.7",
     "sequelize-cli": "^6.6.5"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.19.2",
+    "@types/node": "^25.0.10",
+    "prisma": "^6.19.2"
   }
 }

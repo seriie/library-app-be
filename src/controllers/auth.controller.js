@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import prisma from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { nanoIdFormat } from "../utils/nanoIdFormat.js";
@@ -8,7 +8,7 @@ export const createUser = async (req, res) => {
     const { name, email, password } = req.body;
     const id = nanoIdFormat("uuid-");
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
       return res
@@ -18,7 +18,7 @@ export const createUser = async (req, res) => {
 
     const hashedPw = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({ id, name, email, password: hashedPw });
+    const newUser = await prisma.user.create({ data: { id, name, email, password: hashedPw } });
     res
       .status(201)
       .json({ message: "User created successfully", code: 201, data: newUser });
@@ -30,7 +30,7 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       return res.status(404).json({ message: "User not found", code: 404 });
