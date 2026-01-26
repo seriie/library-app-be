@@ -17,6 +17,7 @@ model Session {
   id        String   @id @default(uuid())
   userId    String @unique
   user      User     @relation(fields: [userId], references: [id])
+  token     String @db.Text
 
   createdAt DateTime @default(now())
   expiredAt DateTime
@@ -51,9 +52,9 @@ model Book {
 
 model Loan {
   id        String @id
-  user      User   @relation(fields: [userId], references: [id])
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  book      Book   @relation(fields: [bookId], references: [id])
+  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId    String
   loanDate  DateTime @default(now())
   returnDate DateTime?

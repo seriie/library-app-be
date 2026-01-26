@@ -33,6 +33,7 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
+    const expiredAt = new Date(Date.now() + 60 * 60 * 1000);
 
     if (!user) {
       return res.status(404).json({ message: "User not found", code: 404 });
@@ -44,15 +45,16 @@ export const loginUser = async (req, res) => {
     const token = jsonwebtoken.sign(
       { id: user.id, name: user.name, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "1d" },
     );
 
-    const session = await prisma.session.create({ data: { id: nanoIdFormat("suid-"), userId: user.id, token } });
+    const session = await prisma.session.create({ data: { id: nanoIdFormat("suid-"), userId: user.id, token, expiredAt } });
     console.log(session);
     res
       .status(200)
       .json({ message: "Login successful", code: 200, data: { id: user.id, name: user.name, email: user.email, token } });
   } catch (err) {
     res.status(500).json({ message: err.message, code: 500 });
+    console.log(err);
   }
 };

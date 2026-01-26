@@ -1,9 +1,10 @@
+import prisma from "../config/prisma.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-export const verifyToken = (req, res, next) => {
+export default function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];

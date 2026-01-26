@@ -37,6 +37,7 @@ export const getBookById = async (req, res) => {
 export const createBook = async (req, res) => {
   try {
     const { title, author, description, stock } = req.body;
+    const parseStock = parseInt(stock);
 
     const id = nanoIdFormat("buid-");
 
@@ -55,7 +56,7 @@ export const createBook = async (req, res) => {
         title,
         author,
         description,
-        stock,
+        stock: parseStock,
       }
     });
 

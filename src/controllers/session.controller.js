@@ -45,3 +45,17 @@ export const createSession = async (req, res) => {
     res.status(500).json({ message: err.message, code: 500 });
   }
 };
+
+export const deleteSession = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const userId = await prisma.user.findUnique({ where: { id } });
+
+    await prisma.session.delete({ where: { userId: userId.id } });
+
+    res.status(204).json({ message: "User session deleted", code: 204 });
+  } catch (e) {
+    res.status(500).json({ message: `Internal server error: ${e.message}`, code: 500 });
+  }
+}
