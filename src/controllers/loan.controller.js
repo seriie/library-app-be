@@ -6,7 +6,14 @@ export const getLoans = async (req, res) => {
   try {
     const loans = await prisma.loan.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
         book: true,
       },
     });
