@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/books HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "bambimbum",
+  "author": "bambum",
+  "synopsis": "bimbimbimbambambambumbum",
+  "stock": 23
+}
