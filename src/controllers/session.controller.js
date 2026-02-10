@@ -50,9 +50,9 @@ export const deleteSession = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const userId = await prisma.user.findUnique({ where: { id } });
+    const sessionId = await prisma.session.findUnique({ where: { userId: id } });
 
-    await prisma.session.delete({ where: { userId: userId.id } });
+    await prisma.session.delete({ where: { id: sessionId } });
 
     res.status(204).json({ message: "User session deleted", code: 204 });
   } catch (e) {
