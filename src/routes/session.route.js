@@ -5,6 +5,6 @@ import verifyToken from '../middlewares/auth.middleware.js';
 
 router.post("/", verifyToken, sessionController.createSession);
 router.get("/", verifyToken, sessionController.getSessions);
-router.delete("/:id", sessionController.deleteSession);
+router.delete("/:id", verifyToken, sessionController.deleteSession);
 
 export default router;

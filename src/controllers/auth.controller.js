@@ -49,12 +49,10 @@ export const loginUser = async (req, res) => {
     );
 
     const session = await prisma.session.create({ data: { id: nanoIdFormat("suid-"), userId: user.id, token, expiredAt } });
-    console.log(session);
     res
       .status(200)
       .json({ message: "Login successful", code: 200, data: { id: user.id, name: user.name, email: user.email, token } });
   } catch (err) {
     res.status(500).json({ message: err.message, code: 500 });
-    console.log(err);
   }
 };
